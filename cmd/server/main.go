@@ -10,6 +10,8 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
+	"gopkg.in/Graylog2/go-gelf.v1/gelf"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/peer"
@@ -120,11 +122,23 @@ func main() {
 			}).Fatal("couldn't open log file")
 		}
 		defer output.Close()
-		logger.SetOutput(output)
+
+		gelfWriter, err := gelf.NewWriter("10.88.66.51:12201")
+		if err != nil {
+			log.Fatalf("gelf.NewWriter: %s", err)
+		}
+		// log to both stderr and graylog2
+		log.SetOutput(io.MultiWriter(output, gelfWriter))
+		log.Printf("logging to stderr & graylog2@'%s'", graylogAddr)
+
+		// logger.SetOutput(output)
 		logger.SetFormatter(&logrus.JSONFormatter{})
 	}
 
 	logger.SetLevel(logrus.Level(opts.logLevel))
+
+	// test message
+	log.Printf("Hello gray World")
 
 	// gRPC initialization
 	var server *grpc.Server
