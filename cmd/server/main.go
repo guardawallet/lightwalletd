@@ -128,8 +128,7 @@ func main() {
 			log.Fatalf("gelf.NewWriter: %s", err)
 		}
 		// log to both stderr and graylog2
-		log.SetOutput(io.MultiWriter(output, gelfWriter))
-		log.Printf("logging to stderr & graylog2@'%s'", graylogAddr)
+		logger.SetOutput(io.MultiWriter(output, gelfWriter))
 
 		// logger.SetOutput(output)
 		logger.SetFormatter(&logrus.JSONFormatter{})
