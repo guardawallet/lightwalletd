@@ -16,6 +16,7 @@ import (
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/golang/protobuf/proto"
 	"github.com/sirupsen/logrus"
+	"github.com/gemnasium/logrus-graylog-hook/v3"
 
 	"github.com/zcash-hackworks/lightwalletd/frontend"
 	"github.com/zcash-hackworks/lightwalletd/parser"
@@ -80,6 +81,10 @@ func main() {
 		logger.SetOutput(output)
 		logger.SetFormatter(&logrus.JSONFormatter{})
 	}
+
+	//GRAYLOG
+	hook := graylog.NewGraylogHook("10.88.66.51:12201", map[string]interface{}{"this": "is logged every time"})
+  logger.AddHook(hook)
 
 	logger.SetLevel(logrus.Level(opts.logLevel))
 
