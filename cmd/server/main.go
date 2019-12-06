@@ -10,7 +10,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/sirupsen/logrus"
+	// "github.com/sirupsen/logrus"
+	"log"
 	"gopkg.in/Graylog2/go-gelf.v1/gelf"
 
 	"google.golang.org/grpc"
@@ -23,18 +24,18 @@ import (
 )
 
 var log *logrus.Entry
-var logger = logrus.New()
+// var logger = logrus.New()
 
 func init() {
-	logger.SetFormatter(&logrus.TextFormatter{
+	log.SetFormatter(&logrus.TextFormatter{
 		//DisableColors:          true,
 		FullTimestamp:          true,
 		DisableLevelTruncation: true,
 	})
 
-	log = logger.WithFields(logrus.Fields{
-		"app": "frontend-grpc",
-	})
+	// log = logger.WithFields(logrus.Fields{
+	// 	"app": "frontend-grpc",
+	// })
 }
 
 // TODO stream logging
@@ -129,13 +130,13 @@ func main() {
 			log.Fatalf("gelf.NewWriter: %s", err)
 		}
 		// log to both stderr and graylog2
-		logger.SetOutput(io.MultiWriter(output, gelfWriter))
+		log.SetOutput(io.MultiWriter(output, gelfWriter))
 
 		// logger.SetOutput(output)
-		logger.SetFormatter(&logrus.JSONFormatter{})
+		log.SetFormatter(&logrus.JSONFormatter{})
 	}
 
-	logger.SetLevel(logrus.Level(opts.logLevel))
+	log.SetLevel(logrus.Level(opts.logLevel))
 
 	// test message
 	log.Printf("Hello gray World")
