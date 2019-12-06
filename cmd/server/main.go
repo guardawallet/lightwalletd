@@ -5,14 +5,14 @@ import (
 	"flag"
 	"net"
 	"os"
-	"io"
 	"os/signal"
 	"syscall"
 	"time"
 
-	// "github.com/sirupsen/logrus"
-	"log"
-	"gopkg.in/Graylog2/go-gelf.v1/gelf"
+	"github.com/sirupsen/logrus"
+	"github.com/gemnasium/logrus-graylog-hook/v3"
+	// "log"
+	// "gopkg.in/Graylog2/go-gelf.v1/gelf"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -24,10 +24,10 @@ import (
 )
 
 var log *logrus.Entry
-// var logger = logrus.New()
+var logger = logrus.New()
 
 func init() {
-	log.SetFormatter(&logrus.TextFormatter{
+	logger.SetFormatter(&logrus.TextFormatter{
 		//DisableColors:          true,
 		FullTimestamp:          true,
 		DisableLevelTruncation: true,
@@ -125,21 +125,25 @@ func main() {
 		}
 		defer output.Close()
 
-		gelfWriter, err := gelf.NewWriter("10.88.66.51:12201")
-		if err != nil {
-			log.Fatalf("gelf.NewWriter: %s", err)
-		}
+		// gelfWriter, err := gelf.NewWriter("10.88.66.51:12201")
+		// if err != nil {
+		// 	log.Fatalf("gelf.NewWriter: %s", err)
+		// }
 		// log to both stderr and graylog2
-		log.SetOutput(io.MultiWriter(output, gelfWriter))
+		// logger.SetOutput(io.MultiWriter(output, gelfWriter))
 
-		// logger.SetOutput(output)
-		log.SetFormatter(&logrus.JSONFormatter{})
+		logger.SetOutput(output)
+		logger.SetFormatter(&logrus.JSONFormatter{})
 	}
 
-	log.SetLevel(logrus.Level(opts.logLevel))
+	//GRAYLOG
+	hook := graylog.NewGraylogHook("10.88.66.51:12201", map[string]interface{}{"this": "is logged every time"})
+  logger.AddHook(hook)
+
+	logger.SetLevel(logrus.Level(opts.logLevel))
 
 	// test message
-	log.Printf("Hello gray World")
+	log.Info("Hello gray World")
 
 	// gRPC initialization
 	var server *grpc.Server
