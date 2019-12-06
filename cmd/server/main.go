@@ -33,9 +33,9 @@ func init() {
 		DisableLevelTruncation: true,
 	})
 
-	// log = logger.WithFields(logrus.Fields{
-	// 	"app": "frontend-grpc",
-	// })
+	log = logger.WithFields(logrus.Fields{
+		"app": "frontend-grpc",
+	})
 }
 
 // TODO stream logging
@@ -144,6 +144,7 @@ func main() {
 
 	// test message
 	log.Info("Hello gray World")
+	logger.Info("Hello gray World")
 
 	// gRPC initialization
 	var server *grpc.Server
