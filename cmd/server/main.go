@@ -11,8 +11,6 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/gemnasium/logrus-graylog-hook/v3"
-	// "log"
-	// "gopkg.in/Graylog2/go-gelf.v1/gelf"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -125,13 +123,6 @@ func main() {
 		}
 		defer output.Close()
 
-		// gelfWriter, err := gelf.NewWriter("10.88.66.51:12201")
-		// if err != nil {
-		// 	log.Fatalf("gelf.NewWriter: %s", err)
-		// }
-		// log to both stderr and graylog2
-		// logger.SetOutput(io.MultiWriter(output, gelfWriter))
-
 		logger.SetOutput(output)
 		logger.SetFormatter(&logrus.JSONFormatter{})
 	}
@@ -144,7 +135,6 @@ func main() {
 
 	// test message
 	log.Info("Hello gray World")
-	logger.Info("Hello gray World")
 
 	// gRPC initialization
 	var server *grpc.Server
